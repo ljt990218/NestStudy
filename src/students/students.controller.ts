@@ -1,29 +1,55 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Controller, Inject, Get, Post, Query, Body, Request, Param, Headers } from '@nestjs/common';
 import { StudentDto } from './students.dto';
 import { StudentsService } from './students.service';
-import { User } from '../common/decorators';
+import { ClassesService } from '../classes/classes.service';
 
 @Controller('students')
 export class StudentsController {
-  constructor(private readonly studentService: StudentsService) { }
+  constructor(
+    @Inject('students') private studentService: StudentsService,
+    @Inject('studentsList') private studentsList: string[],
+    @Inject('Config') private teacher: string,
+    private classesService: ClassesService
+  ) { }
 
-  @Get('whoAreYou')
-  whoAreYou(@Query('name') name: string) {
-    return this.studentService.ImStudent(name);
+  @Post('/addStudent')
+  addStudent(@Body() body): any {
+    return this.studentService.addStudent(body);
   }
 
-  @Post('create')
-  createStudent(@Body() student: StudentDto) {
-    return this.studentService.createStudent(student.name);
+  @Get('/deleteStudent/:id')
+  delStudent(@Param() params: any) {
+    let id: number = parseInt(params.id);
+    return this.studentService.delStudent(id);
   }
 
-  @Get('getNameByID')
-  getNameByID(@Query('id') id: number) {
-    return this.studentService.getStudentName(id);
+  @Post('/updataStudent')
+  updataStudent(@Body() body) {
+    return this.studentService.updataStudent(body);
   }
 
-  @Post('whoIsReq')
-  whoIsReq(@User() user) {
-    return user;
+  @Get('/getStudent')
+  getStudent(@Query() query: any) {
+    return this.studentService.getStudentById(query.id);
+  }
+
+  @Get('/getStudentsList')
+  getStudentsList() {
+    return this.studentsList;
+  }
+
+  @Get('/corstest')
+  corsTest(): object {
+    return { message: 'cors test' };
+  }
+
+  @Get('/findAll')
+  findAll() {
+    return this.classesService.findAll();
+  }
+
+  @Get('/teacher')
+  getTeacher() {
+    return this.teacher;
   }
 }

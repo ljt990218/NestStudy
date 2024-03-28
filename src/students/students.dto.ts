@@ -5,9 +5,7 @@ export class StudentDto {
   @IsString()
   id: number;
   name: string;
-  email: string;
-  phone: string;
-  address: string;
-  createdAt: Date;
-  updatedAt: Date;
+  age: number;
+  updateDate: Date;
+  createDate: Date;
 }
